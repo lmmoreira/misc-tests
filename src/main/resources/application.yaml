@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: Misc-Tests
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:mydb;MODE=PostgreSQL;
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.globally_quoted_identifiers: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  threads:
+    virtual:
+      enabled: true
+
+cache:
+  memcached:
+    host: localhost
+    port: 11211
+    enabled: true
+    defaultTTL: 0
+    timeout: 500
+  redis:
+    host: localhost
+    port: 6379
+    password: mypass
+    enabled: true
+    defaultTTL: -1
+    timeout: 500
