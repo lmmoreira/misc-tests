@@ -137,6 +137,7 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>property-file</id>
 						<phase>verify</phase>
 						<goals>
 							<goal>exec</goal>
