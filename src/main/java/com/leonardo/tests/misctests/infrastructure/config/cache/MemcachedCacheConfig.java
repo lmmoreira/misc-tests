@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -24,7 +23,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "cache.memcached", name = "enabled", havingValue = "true")
 @Slf4j
 public class MemcachedCacheConfig extends AbstractSSMConfiguration {
 
@@ -57,16 +55,18 @@ public class MemcachedCacheConfig extends AbstractSSMConfiguration {
 
     @Bean(name = CACHE_MANAGER)
     public CacheManager cacheManager() throws Exception {
-        ExtendedSSMCacheManager cacheManager = new ExtendedSSMCacheManager();
-        Cache cache = this.defaultMemcachedClient().getObject();
+        if (memcachedProperties.enabled()) {
+            ExtendedSSMCacheManager cacheManager = new ExtendedSSMCacheManager();
+            Cache cache = this.defaultMemcachedClient().getObject();
 
-        if (!Objects.requireNonNull(cache).getAvailableServers().isEmpty()) {
-            cacheManager.setCaches(List.of(new SSMCache(cache, memcachedProperties.defaultTTL())));
-            return cacheManager;
+            if (!Objects.requireNonNull(cache).getAvailableServers().isEmpty()) {
+                cacheManager.setCaches(List.of(new SSMCache(cache, memcachedProperties.defaultTTL())));
+                return cacheManager;
+            }
+
+            log.error("[MemcachedCacheConfig] connection failed. Failing back to ConcurrentMapCacheManager");
         }
 
-        log.error(
-            "[MemcachedCacheConfig][Memcached] connection failed. Failing back to ConcurrentMapCacheManager");
         return new ConcurrentMapCacheManager(CACHE_NAME);
     }
 }

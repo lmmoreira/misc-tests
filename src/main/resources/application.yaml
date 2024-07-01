@@ -27,13 +27,19 @@ cache:
   memcached:
     host: localhost
     port: 11211
-    enabled: true
     defaultTTL: 0
     timeout: 500
+    enabled: true
   redis:
     host: localhost
     port: 6379
     password: mypass
-    enabled: true
     defaultTTL: -1
     timeout: 500
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: ERROR
+    org.hibernate: ERROR

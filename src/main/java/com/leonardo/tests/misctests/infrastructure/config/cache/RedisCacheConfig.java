@@ -3,6 +3,7 @@ package com.leonardo.tests.misctests.infrastructure.config.cache;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import java.time.Duration;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,7 +26,6 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@ConditionalOnProperty(prefix = "cache.redis", name = "enabled", havingValue = "true")
 @Configuration
 @EnableCaching
 @EnableConfigurationProperties(RedisProperties.class)
@@ -38,6 +38,7 @@ public class RedisCacheConfig implements CachingConfigurer {
     private final RedisProperties redisProperties;
 
     @Bean
+    @ConditionalOnProperty(prefix = "cache.redis", name = "enabled", havingValue = "true")
     public LettuceConnectionFactory redisConnectionFactory() {
         final SocketOptions so =
             SocketOptions.builder()
@@ -61,15 +62,17 @@ public class RedisCacheConfig implements CachingConfigurer {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(final RedisConnectionFactory cf) {
+    @ConditionalOnProperty(prefix = "cache.redis", name = "enabled", havingValue = "true")
+    public RedisTemplate<String, Object> redisTemplate(final RedisConnectionFactory redisConnectionFactory) {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(cf);
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "cache.redis", name = "enabled", havingValue = "true")
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
             .disableCachingNullValues()
@@ -80,18 +83,22 @@ public class RedisCacheConfig implements CachingConfigurer {
 
     @Bean(name = CACHE_MANAGER)
     public CacheManager redisCacheManager(
-        final RedisConnectionFactory redisConnectionFactory,
-        final RedisCacheConfiguration redisCacheConfiguration) {
+        final Optional<RedisConnectionFactory> redisConnectionFactory,
+        final Optional<RedisCacheConfiguration> redisCacheConfiguration) {
 
-        try {
-            log.info("[REDIS] connection status {}", redisConnectionFactory.getConnection().ping());
-            return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
-        } catch (final Exception e) {
-            log.error(
-                "[RedisCacheConfig][Redis] connection failed. Failing back to ConcurrentMapCacheManager");
+        if (redisProperties.enabled() && redisConnectionFactory.isPresent() && redisCacheConfiguration.isPresent()) {
+            try {
+                log.info("[REDIS] connection status {}",
+                    redisConnectionFactory.get().getConnection().ping());
+                return RedisCacheManager.builder(redisConnectionFactory.get())
+                    .cacheDefaults(redisCacheConfiguration.get())
+                    .build();
+            } catch (final Exception e) {
+                log.error(
+                    "[RedisCacheConfig] connection failed. Failing back to ConcurrentMapCacheManager");
+            }
         }
+
         return new ConcurrentMapCacheManager(CACHE_NAME);
     }
 

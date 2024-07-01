@@ -2,8 +2,11 @@ package com.leonardo.tests.misctests.infrastructure.service.cache;
 
 import java.util.Objects;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+@Slf4j
 public abstract class AbstractCacheService implements CacheService {
 
     public abstract CacheManager getCacheManager();
@@ -13,35 +16,35 @@ public abstract class AbstractCacheService implements CacheService {
     public abstract void put(String key, Object value, long seconds);
 
     @Override
-    @CacheRetrieveException
+    @CacheException
     public <T> Optional<T> get(String key, Class<T> clazz) {
-        var cache = this.getCacheManager().getCache(this.getCacheName());
-        return Optional.ofNullable(Objects.requireNonNull(cache).get(key, clazz));
+        final Cache cache = this.getCacheManager().getCache(this.getCacheName());
+        final Optional<T> optional = Optional.ofNullable(Objects.requireNonNull(cache).get(key, clazz));
+        log.info("[CacheService] Get key {} from cache: {}", key, optional.orElse(null));
+        return optional;
     }
 
     @Override
-    @CacheRetrieveException(defaultValue = "false")
+    @CacheException(defaultValue = "false")
     public boolean exists(String key) {
-        var cache = this.getCacheManager().getCache(this.getCacheName());
-        return Objects.requireNonNull(cache).get(key) != null;
+        return this.get(key, Object.class).isPresent();
     }
 
     @Override
-    @CacheRetrieveException(defaultValue = "true")
+    @CacheException(defaultValue = "true")
     public boolean notExists(String key) {
-        var cache = this.getCacheManager().getCache(this.getCacheName());
-        return Objects.requireNonNull(cache).get(key) == null;
+        return !this.exists(key);
     }
 
     @Override
-    @CacheRetrieveException
+    @CacheException
     public void put(String key, Object value) {
         var cache = this.getCacheManager().getCache(this.getCacheName());
         Objects.requireNonNull(cache).put(key, value);
     }
 
     @Override
-    @CacheRetrieveException
+    @CacheException
     public void evict(String key) {
         var cache = this.getCacheManager().getCache(this.getCacheName());
         Objects.requireNonNull(cache).evict(key);

@@ -1,0 +1,8 @@
+.idea
+*.iws
+*.iml
+*.ipr
+*.bkp
+*.dtmp
+target
+/etc/doc/*.drawio

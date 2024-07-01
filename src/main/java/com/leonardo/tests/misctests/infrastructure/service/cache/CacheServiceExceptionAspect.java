@@ -11,11 +11,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 @Slf4j
+@Order(2)
 public class CacheServiceExceptionAspect {
 
     private final Map<Class<?>, Function<String, ?>> returnHandlers;
@@ -32,9 +34,9 @@ public class CacheServiceExceptionAspect {
         this.returnHandlers.put(String.class, Function.identity());
     }
 
-    @Around("@annotation(cacheRetrieveException)")
+    @Around("@annotation(cacheException)")
     public Object handleException(final ProceedingJoinPoint joinPoint,
-        final CacheRetrieveException cacheRetrieveException) throws Throwable {
+        final CacheException cacheException) throws Throwable {
         try {
             return joinPoint.proceed();
         } catch (final Exception e) {
@@ -45,7 +47,7 @@ public class CacheServiceExceptionAspect {
             log.error("[CacheService] Error on cache functions {}", e.toString());
 
             return Optional.ofNullable(returnHandlers.get(returnType))
-                .map(handler -> handler.apply(cacheRetrieveException.defaultValue()))
+                .map(handler -> handler.apply(cacheException.defaultValue()))
                 .orElse(null);
         }
     }

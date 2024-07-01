@@ -17,9 +17,6 @@ public class MemCachedCacheService extends AbstractCacheService {
     @Qualifier(CACHE_MANAGER)
     private final CacheManager memcachedCacheManager;
 
-    private final String MEMCACHED_SEPARATOR = "#";
-
-
     @Override
     public CacheManager getCacheManager() {
         return this.memcachedCacheManager;
@@ -31,10 +28,13 @@ public class MemCachedCacheService extends AbstractCacheService {
     }
 
     @Override
-    @CacheRetrieveException
+    @CacheException
     public void put(String key, Object value, long seconds) {
         final boolean hasFailedBack = memcachedCacheManager instanceof ConcurrentMapCacheManager;
-        final String cacheName = hasFailedBack ? MemcachedCacheConfig.CACHE_NAME : MemcachedCacheConfig.CACHE_NAME.concat(MEMCACHED_SEPARATOR).concat(String.valueOf(seconds));
+        final String MEMCACHED_SEPARATOR = "#";
+        final String cacheName = hasFailedBack ? MemcachedCacheConfig.CACHE_NAME
+            : MemcachedCacheConfig.CACHE_NAME.concat(
+                MEMCACHED_SEPARATOR).concat(String.valueOf(seconds));
         var cache = memcachedCacheManager.getCache(cacheName);
         Objects.requireNonNull(cache).put(key, value);
     }

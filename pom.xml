@@ -107,6 +107,7 @@
 						<configuration>
 							<executable>unzip</executable>
 							<arguments>
+								<argument>-o</argument>
 								<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
 								<argument>-d</argument>
 								<argument>${project.build.directory}/extracted</argument>
