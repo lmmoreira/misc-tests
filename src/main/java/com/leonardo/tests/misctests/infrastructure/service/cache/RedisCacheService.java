@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 public class RedisCacheService extends AbstractCacheService {
 
     @Qualifier(CACHE_MANAGER)
-    private final CacheManager redisCacheManager;
+    private final Optional<CacheManager> redisCacheManager;
     private final Optional<RedisTemplate<String, Object>> redisTemplate;
 
     @Override
-    public CacheManager getCacheManager() {
+    public Optional<CacheManager> getCacheManager() {
         return this.redisCacheManager;
     }
 
@@ -35,10 +35,14 @@ public class RedisCacheService extends AbstractCacheService {
     @Override
     @CacheException
     public void put(String key, Object value, long seconds) {
-        final boolean hasFailedBack = redisCacheManager instanceof ConcurrentMapCacheManager;
+        if (redisCacheManager.isEmpty()) {
+            return;
+        }
+
+        final boolean hasFailedBack = redisCacheManager.get() instanceof ConcurrentMapCacheManager;
 
         if (hasFailedBack) {
-            final Cache cache = redisCacheManager.getCache(RedisCacheConfig.CACHE_NAME);
+            final Cache cache = redisCacheManager.get().getCache(RedisCacheConfig.CACHE_NAME);
             Objects.requireNonNull(cache).put(key, value);
         } else if (redisTemplate.isPresent()) {
             final String PREFIX_SEPARATOR = "::";

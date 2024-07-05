@@ -63,7 +63,8 @@ public class RedisCacheConfig implements CachingConfigurer {
 
     @Bean
     @ConditionalOnProperty(prefix = "cache.redis", name = "enabled", havingValue = "true")
-    public RedisTemplate<String, Object> redisTemplate(final RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(
+        final RedisConnectionFactory redisConnectionFactory) {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -76,8 +77,10 @@ public class RedisCacheConfig implements CachingConfigurer {
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
             .disableCachingNullValues()
-            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                new StringRedisSerializer()))
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                new GenericJackson2JsonRedisSerializer()))
             .entryTtl(Duration.ofSeconds(this.redisProperties.defaultTTL()));
     }
 
@@ -86,7 +89,8 @@ public class RedisCacheConfig implements CachingConfigurer {
         final Optional<RedisConnectionFactory> redisConnectionFactory,
         final Optional<RedisCacheConfiguration> redisCacheConfiguration) {
 
-        if (redisProperties.enabled() && redisConnectionFactory.isPresent() && redisCacheConfiguration.isPresent()) {
+        if (redisProperties.isRedisMode() && redisConnectionFactory.isPresent()
+            && redisCacheConfiguration.isPresent()) {
             try {
                 log.info("[REDIS] connection status {}",
                     redisConnectionFactory.get().getConnection().ping());
@@ -99,7 +103,7 @@ public class RedisCacheConfig implements CachingConfigurer {
             }
         }
 
-        return new ConcurrentMapCacheManager(CACHE_NAME);
+        return (redisProperties.isNoneMode()) ? null : new ConcurrentMapCacheManager(CACHE_NAME);
     }
 
     @Override

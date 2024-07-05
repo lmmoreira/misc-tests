@@ -1,6 +1,12 @@
 spring:
+  main:
+    lazy-initialization: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: default
   application:
-    name: Misc-Tests
+    name: ${APPLICATION_NAME:MiscDefault}
   h2:
     console:
       enabled: true
@@ -29,14 +35,16 @@ cache:
     port: 11211
     defaultTTL: 0
     timeout: 500
-    enabled: true
+    mode: none
   redis:
     host: localhost
     port: 6379
     password: mypass
     defaultTTL: -1
     timeout: 500
-    enabled: true
+    mode: inmemory
+  caffeine:
+    mode: caffeine
 
 logging:
   level:

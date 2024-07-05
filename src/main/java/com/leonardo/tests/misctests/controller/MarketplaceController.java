@@ -21,6 +21,7 @@ public class MarketplaceController {
 
     private final CacheService memCachedCacheService;
     private final CacheService redisCacheService;
+    private final CacheService caffeineCacheService;
 
     @GetMapping(value = "/{marketplaceId}", produces = "application/json")
     public MarketplaceEntity getUser(@PathVariable Long marketplaceId) {
@@ -45,10 +46,25 @@ public class MarketplaceController {
     }
 
     @GetMapping(value = "/caffeine/{marketplaceId}", produces = "application/json")
-    @Cacheable(cacheManager = "caffeineCacheManager", value = "marketplaceController", key = "{'cafeine', #marketplaceId}")
     public MarketplaceEntity getUserCaffeine(@PathVariable Long marketplaceId) {
-        return marketplaceEntityRepository.findById(marketplaceId)
-            .orElseThrow(RuntimeException::new);
+        return caffeineCacheService.get("default" + marketplaceId, MarketplaceEntity.class)
+            .orElseGet(() -> {
+                var e = marketplaceEntityRepository.findById(marketplaceId)
+                    .orElseThrow(RuntimeException::new);
+                caffeineCacheService.put("default" + marketplaceId, e, 10);
+                return e;
+            });
+    }
+
+    @GetMapping(value = "/caffeine2/{marketplaceId}", produces = "application/json")
+    public MarketplaceEntity getUserCaffeine2(@PathVariable Long marketplaceId) {
+        return caffeineCacheService.get("default2" + marketplaceId, MarketplaceEntity.class)
+            .orElseGet(() -> {
+                var e = marketplaceEntityRepository.findById(marketplaceId)
+                    .orElseThrow(RuntimeException::new);
+                caffeineCacheService.put("default2" + marketplaceId, e, 30);
+                return e;
+            });
     }
 
 }

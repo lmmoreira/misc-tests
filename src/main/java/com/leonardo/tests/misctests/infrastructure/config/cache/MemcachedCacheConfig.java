@@ -55,18 +55,21 @@ public class MemcachedCacheConfig extends AbstractSSMConfiguration {
 
     @Bean(name = CACHE_MANAGER)
     public CacheManager cacheManager() throws Exception {
-        if (memcachedProperties.enabled()) {
+        if (memcachedProperties.isMemcachedMode()) {
             ExtendedSSMCacheManager cacheManager = new ExtendedSSMCacheManager();
             Cache cache = this.defaultMemcachedClient().getObject();
 
             if (!Objects.requireNonNull(cache).getAvailableServers().isEmpty()) {
-                cacheManager.setCaches(List.of(new SSMCache(cache, memcachedProperties.defaultTTL())));
+                cacheManager.setCaches(
+                    List.of(new SSMCache(cache, memcachedProperties.defaultTTL())));
                 return cacheManager;
             }
 
-            log.error("[MemcachedCacheConfig] connection failed. Failing back to ConcurrentMapCacheManager");
+            log.error(
+                "[MemcachedCacheConfig] connection failed. Failing back to ConcurrentMapCacheManager");
         }
 
-        return new ConcurrentMapCacheManager(CACHE_NAME);
+        return (memcachedProperties.isNoneMode()) ? null
+            : new ConcurrentMapCacheManager(CACHE_NAME);
     }
 }

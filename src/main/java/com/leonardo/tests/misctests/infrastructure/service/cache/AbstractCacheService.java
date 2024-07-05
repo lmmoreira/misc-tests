@@ -9,7 +9,7 @@ import org.springframework.cache.CacheManager;
 @Slf4j
 public abstract class AbstractCacheService implements CacheService {
 
-    public abstract CacheManager getCacheManager();
+    public abstract Optional<CacheManager> getCacheManager();
 
     public abstract String getCacheName();
 
@@ -18,8 +18,13 @@ public abstract class AbstractCacheService implements CacheService {
     @Override
     @CacheException
     public <T> Optional<T> get(String key, Class<T> clazz) {
-        final Cache cache = this.getCacheManager().getCache(this.getCacheName());
-        final Optional<T> optional = Optional.ofNullable(Objects.requireNonNull(cache).get(key, clazz));
+        if (this.getCacheManager().isEmpty()) {
+            return Optional.empty();
+        }
+
+        final Cache cache = this.getCacheManager().get().getCache(this.getCacheName());
+        final Optional<T> optional = Optional.ofNullable(
+            Objects.requireNonNull(cache).get(key, clazz));
         log.info("[CacheService] Get key {} from cache: {}", key, optional.orElse(null));
         return optional;
     }
@@ -39,14 +44,22 @@ public abstract class AbstractCacheService implements CacheService {
     @Override
     @CacheException
     public void put(String key, Object value) {
-        var cache = this.getCacheManager().getCache(this.getCacheName());
+        if (this.getCacheManager().isEmpty()) {
+            return;
+        }
+
+        var cache = this.getCacheManager().get().getCache(this.getCacheName());
         Objects.requireNonNull(cache).put(key, value);
     }
 
     @Override
     @CacheException
     public void evict(String key) {
-        var cache = this.getCacheManager().getCache(this.getCacheName());
+        if (this.getCacheManager().isEmpty()) {
+            return;
+        }
+
+        var cache = this.getCacheManager().get().getCache(this.getCacheName());
         Objects.requireNonNull(cache).evict(key);
     }
 
