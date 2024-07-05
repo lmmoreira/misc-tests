@@ -11,9 +11,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(MemCachedCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class MemCachedCacheService extends AbstractCacheService {
+
+    public static final String BEAN_ID = "memCachedCacheService";
 
     @Qualifier(CACHE_MANAGER)
     private final Optional<CacheManager> memcachedCacheManager;
@@ -35,12 +37,8 @@ public class MemCachedCacheService extends AbstractCacheService {
             return;
         }
 
-        final boolean hasFailedBack = memcachedCacheManager.get() instanceof ConcurrentMapCacheManager;
         final String MEMCACHED_SEPARATOR = "#";
-        final String cacheName = hasFailedBack ? MemcachedCacheConfig.CACHE_NAME
-            : MemcachedCacheConfig.CACHE_NAME.concat(
-                MEMCACHED_SEPARATOR).concat(String.valueOf(seconds));
-        var cache = memcachedCacheManager.get().getCache(cacheName);
-        Objects.requireNonNull(cache).put(key, value);
+        var cache = memcachedCacheManager.get().getCache(getCacheName());
+        Objects.requireNonNull(cache).put(key.concat(MEMCACHED_SEPARATOR).concat(String.valueOf(seconds)), value);
     }
 }

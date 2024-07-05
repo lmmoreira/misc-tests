@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(CaffeineCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class CaffeineCacheService extends AbstractCacheService {
+
+    public static final String BEAN_ID = "caffeineCacheService";
 
     @Qualifier(CACHE_MANAGER)
     private final Optional<CacheManager> caffeineCacheManager;

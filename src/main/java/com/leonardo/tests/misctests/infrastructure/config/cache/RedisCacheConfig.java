@@ -103,7 +103,7 @@ public class RedisCacheConfig implements CachingConfigurer {
             }
         }
 
-        return (redisProperties.isNoneMode()) ? null : new ConcurrentMapCacheManager(CACHE_NAME);
+        return (redisProperties.isNoneMode()) ? null : new CustomCaffeineCacheManager();
     }
 
     @Override

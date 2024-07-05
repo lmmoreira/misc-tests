@@ -8,15 +8,15 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(RedisCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class RedisCacheService extends AbstractCacheService {
+
+    public static final String BEAN_ID = "redisCacheService";
 
     @Qualifier(CACHE_MANAGER)
     private final Optional<CacheManager> redisCacheManager;
@@ -39,12 +39,13 @@ public class RedisCacheService extends AbstractCacheService {
             return;
         }
 
-        final boolean hasFailedBack = redisCacheManager.get() instanceof ConcurrentMapCacheManager;
+        final boolean hasFailedBack = redisTemplate.isEmpty();
 
         if (hasFailedBack) {
-            final Cache cache = redisCacheManager.get().getCache(RedisCacheConfig.CACHE_NAME);
-            Objects.requireNonNull(cache).put(key, value);
-        } else if (redisTemplate.isPresent()) {
+            final String CAFFEINE_SEPARATOR = "#";
+            var cache = redisCacheManager.get().getCache(getCacheName());
+            Objects.requireNonNull(cache).put(key.concat(CAFFEINE_SEPARATOR).concat(String.valueOf(seconds)), value);
+        } else {
             final String PREFIX_SEPARATOR = "::";
             final String redisKey = RedisCacheConfig.CACHE_NAME.concat(PREFIX_SEPARATOR) + key;
             redisTemplate.get().opsForValue().set(redisKey, value, seconds, TimeUnit.SECONDS);

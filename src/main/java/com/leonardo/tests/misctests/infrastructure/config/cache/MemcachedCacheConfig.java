@@ -70,6 +70,6 @@ public class MemcachedCacheConfig extends AbstractSSMConfiguration {
         }
 
         return (memcachedProperties.isNoneMode()) ? null
-            : new ConcurrentMapCacheManager(CACHE_NAME);
+            : new CustomCaffeineCacheManager();
     }
 }
