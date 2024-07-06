@@ -35,16 +35,19 @@ cache:
     port: 11211
     defaultTTL: 0
     timeout: 500
-    mode: inmemory
+    # none, inmemory, memcached
+    mode: none
   redis:
     host: localhost
     port: 6379
     password: mypass
     defaultTTL: -1
     timeout: 500
-    mode: inmemory
+    # none, inmemory, redis
+    mode: none
   caffeine:
-    mode: caffeine
+    # none, caffeine
+    mode: none
 
 logging:
   level:

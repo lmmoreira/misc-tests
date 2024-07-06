@@ -13,8 +13,6 @@ public abstract class AbstractCacheService implements CacheService {
 
     public abstract String getCacheName();
 
-    public abstract void put(String key, Object value, long seconds);
-
     @Override
     @CacheException
     public <T> Optional<T> get(String key, Class<T> clazz) {
@@ -50,6 +48,19 @@ public abstract class AbstractCacheService implements CacheService {
 
         var cache = this.getCacheManager().get().getCache(this.getCacheName());
         Objects.requireNonNull(cache).put(key, value);
+    }
+
+    @Override
+    @CacheException
+    public void put(String key, Object value, long seconds) {
+        if (this.getCacheManager().isEmpty()) {
+            return;
+        }
+
+        final String TTL_SEPARATOR = "#";
+        var cache = this.getCacheManager().get().getCache(getCacheName());
+        Objects.requireNonNull(cache)
+            .put(key.concat(TTL_SEPARATOR).concat(String.valueOf(seconds)), value);
     }
 
     @Override

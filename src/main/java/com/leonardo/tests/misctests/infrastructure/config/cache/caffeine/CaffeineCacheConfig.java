@@ -1,6 +1,8 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.caffeine;
 
+import com.leonardo.tests.misctests.infrastructure.config.cache.properties.CaffeineProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
+@ConditionalOnExpression("'${cache.caffeine.mode}'.equals('caffeine')")
 public class CaffeineCacheConfig {
 
     public static final String CACHE_MANAGER = "caffeineCacheManager";

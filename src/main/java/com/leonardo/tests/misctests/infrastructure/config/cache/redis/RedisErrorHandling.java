@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.redis;
 
 import static java.lang.String.format;
 

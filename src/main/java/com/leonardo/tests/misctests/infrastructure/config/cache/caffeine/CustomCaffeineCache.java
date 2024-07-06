@@ -1,6 +1,6 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.caffeine;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.CaffeineCacheConfig.TTL_SEPARATOR;
+import static com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig.TTL_SEPARATOR;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import java.time.Duration;

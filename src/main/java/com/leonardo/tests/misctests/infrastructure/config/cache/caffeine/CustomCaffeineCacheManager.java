@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.caffeine;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;

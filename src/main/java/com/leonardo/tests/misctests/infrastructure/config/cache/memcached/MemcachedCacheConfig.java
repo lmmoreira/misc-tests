@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.memcached;
 
 import com.google.code.ssm.Cache;
 import com.google.code.ssm.CacheFactory;
@@ -8,14 +8,16 @@ import com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl;
 import com.google.code.ssm.providers.xmemcached.XMemcachedConfiguration;
 import com.google.code.ssm.spring.ExtendedSSMCacheManager;
 import com.google.code.ssm.spring.SSMCache;
+import com.leonardo.tests.misctests.infrastructure.config.cache.InMemoryCacheManager;
+import com.leonardo.tests.misctests.infrastructure.config.cache.properties.MemcachedProperties;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,7 +26,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 @RequiredArgsConstructor
 @Slf4j
-public class MemcachedCacheConfig extends AbstractSSMConfiguration {
+@ConditionalOnExpression("'${cache.memcached.mode}'.equals('memcached') || '${cache.memcached.mode}'.equals('inmemory')")
+public class MemcachedCacheConfig extends AbstractSSMConfiguration implements InMemoryCacheManager {
 
     public static final String CACHE_MANAGER = "memcachedCacheManager";
     private static final String PORT_SEPARATOR = ":";
@@ -55,7 +58,7 @@ public class MemcachedCacheConfig extends AbstractSSMConfiguration {
 
     @Bean(name = CACHE_MANAGER)
     public CacheManager cacheManager() throws Exception {
-        if (memcachedProperties.isMemcachedMode()) {
+        if (memcachedProperties.isCacheMode()) {
             ExtendedSSMCacheManager cacheManager = new ExtendedSSMCacheManager();
             Cache cache = this.defaultMemcachedClient().getObject();
 
@@ -69,7 +72,6 @@ public class MemcachedCacheConfig extends AbstractSSMConfiguration {
                 "[MemcachedCacheConfig] connection failed. Failing back to ConcurrentMapCacheManager");
         }
 
-        return (memcachedProperties.isNoneMode()) ? null
-            : new CustomCaffeineCacheManager();
+        return (memcachedProperties.isNoneMode()) ? null : inMemoryCacheManager();
     }
 }

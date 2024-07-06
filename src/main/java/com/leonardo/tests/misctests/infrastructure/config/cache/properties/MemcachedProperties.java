@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache;
+package com.leonardo.tests.misctests.infrastructure.config.cache.properties;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,18 +11,6 @@ public record MemcachedProperties(
     int port,
     int defaultTTL,
     int timeout
-) {
-
-    public boolean isMemcachedMode() {
-        return "memcached".equals(mode);
-    }
-
-    public boolean isInMemoryMode() {
-        return "inmemory".equals(mode);
-    }
-
-    public boolean isNoneMode() {
-        return "none".equals(mode);
-    }
+) implements CacheProperties {
 
 }

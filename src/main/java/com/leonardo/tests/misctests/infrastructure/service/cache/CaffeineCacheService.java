@@ -1,9 +1,8 @@
 package com.leonardo.tests.misctests.infrastructure.service.cache;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.CaffeineCacheConfig.CACHE_MANAGER;
+import static com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig.CACHE_MANAGER;
 
-import com.leonardo.tests.misctests.infrastructure.config.cache.CaffeineCacheConfig;
-import java.util.Objects;
+import com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,15 +28,4 @@ public class CaffeineCacheService extends AbstractCacheService {
         return CaffeineCacheConfig.CACHE_NAME;
     }
 
-    @Override
-    @CacheException
-    public void put(String key, Object value, long seconds) {
-        if (caffeineCacheManager.isEmpty()) {
-            return;
-        }
-
-        final String CAFFEINE_SEPARATOR = "#";
-        var cache = caffeineCacheManager.get().getCache(getCacheName());
-        Objects.requireNonNull(cache).put(key.concat(CAFFEINE_SEPARATOR).concat(String.valueOf(seconds)), value);
-    }
 }

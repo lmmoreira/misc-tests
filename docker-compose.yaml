@@ -7,6 +7,12 @@ services:
     ports:
       - "11211:11211"
     command: ["memcached", "-m", "64", "-c", "1024"]
+  memcached-2:
+    image: memcached:latest
+    container_name: misc-tests-memcached-2
+    ports:
+      - "11212:11211"
+    command: [ "memcached", "-m", "64", "-c", "1024" ]
   redis:
     image: redis:6.2-alpine
     container_name: misc-tests-redis

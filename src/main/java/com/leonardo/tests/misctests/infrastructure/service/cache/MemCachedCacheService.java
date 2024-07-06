@@ -1,14 +1,14 @@
 package com.leonardo.tests.misctests.infrastructure.service.cache;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.MemcachedCacheConfig.CACHE_MANAGER;
+import static com.leonardo.tests.misctests.infrastructure.config.cache.memcached.MemcachedCacheConfig.CACHE_MANAGER;
 
-import com.leonardo.tests.misctests.infrastructure.config.cache.MemcachedCacheConfig;
+import com.google.code.ssm.spring.ExtendedSSMCacheManager;
+import com.leonardo.tests.misctests.infrastructure.config.cache.memcached.MemcachedCacheConfig;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.stereotype.Component;
 
 @Component(MemCachedCacheService.BEAN_ID)
@@ -37,8 +37,16 @@ public class MemCachedCacheService extends AbstractCacheService {
             return;
         }
 
-        final String MEMCACHED_SEPARATOR = "#";
-        var cache = memcachedCacheManager.get().getCache(getCacheName());
-        Objects.requireNonNull(cache).put(key.concat(MEMCACHED_SEPARATOR).concat(String.valueOf(seconds)), value);
+        final boolean hasFailedBack = !(memcachedCacheManager.get() instanceof ExtendedSSMCacheManager);
+
+        if (hasFailedBack) {
+            super.put(key, value, seconds);
+        } else {
+            final String MEMCACHED_SEPARATOR = "#";
+            var cache = memcachedCacheManager.get().getCache(MemcachedCacheConfig.CACHE_NAME.concat(
+                MEMCACHED_SEPARATOR).concat(String.valueOf(seconds)));
+            Objects.requireNonNull(cache).put(key, value);
+        }
     }
+
 }
