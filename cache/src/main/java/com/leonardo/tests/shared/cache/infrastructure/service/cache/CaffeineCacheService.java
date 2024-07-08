@@ -1,15 +1,15 @@
-package com.leonardo.tests.misctests.infrastructure.service.cache;
+package com.leonardo.tests.shared.cache.infrastructure.service.cache;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig.CACHE_MANAGER;
+import static com.leonardo.tests.shared.cache.infrastructure.config.cache.caffeine.CaffeineCacheConfig.CACHE_MANAGER;
 
-import com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.caffeine.CaffeineCacheConfig;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-//@Component(CaffeineCacheService.BEAN_ID)
+@Component(CaffeineCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class CaffeineCacheService extends AbstractCacheService {
 

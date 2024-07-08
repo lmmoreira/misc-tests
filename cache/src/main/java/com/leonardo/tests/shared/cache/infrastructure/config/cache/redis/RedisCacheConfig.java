@@ -1,7 +1,7 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache.redis;
+package com.leonardo.tests.shared.cache.infrastructure.config.cache.redis;
 
-import com.leonardo.tests.misctests.infrastructure.config.cache.InMemoryCacheManager;
-import com.leonardo.tests.misctests.infrastructure.config.cache.properties.RedisProperties;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.InMemoryCacheManager;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.properties.RedisProperties;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import java.time.Duration;
@@ -28,12 +28,12 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-//@Configuration
-//@EnableCaching
-//@EnableConfigurationProperties(RedisProperties.class)
+@Configuration
+@EnableCaching
+@EnableConfigurationProperties(RedisProperties.class)
 @RequiredArgsConstructor
 @Slf4j
-//@ConditionalOnExpression("'${cache.redis.mode}'.equals('redis') || '${cache.redis.mode}'.equals('inmemory')")
+@ConditionalOnExpression("'${cache.redis.mode}'.equals('redis') || '${cache.redis.mode}'.equals('inmemory')")
 public class RedisCacheConfig implements CachingConfigurer, InMemoryCacheManager {
 
     public static final String CACHE_MANAGER = "RedisCacheManager";

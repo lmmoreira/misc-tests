@@ -1,8 +1,8 @@
-package com.leonardo.tests.misctests.infrastructure.service.cache;
+package com.leonardo.tests.shared.cache.infrastructure.service.cache;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.redis.RedisCacheConfig.CACHE_MANAGER;
+import static com.leonardo.tests.shared.cache.infrastructure.config.cache.redis.RedisCacheConfig.CACHE_MANAGER;
 
-import com.leonardo.tests.misctests.infrastructure.config.cache.redis.RedisCacheConfig;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.redis.RedisCacheConfig;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-//@Component(RedisCacheService.BEAN_ID)
+@Component(RedisCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class RedisCacheService extends AbstractCacheService {
 

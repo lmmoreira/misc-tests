@@ -1,11 +1,11 @@
-package com.leonardo.tests.misctests.infrastructure.service.cache;
+package com.leonardo.tests.shared.cache.infrastructure.service.cache;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-//@Component
+@Component
 public class CacheServiceFactory  {
 
     private final Map<String, CacheService> cacheServiceMap;

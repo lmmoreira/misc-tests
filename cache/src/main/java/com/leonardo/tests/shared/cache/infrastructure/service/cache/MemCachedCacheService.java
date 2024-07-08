@@ -1,9 +1,9 @@
-package com.leonardo.tests.misctests.infrastructure.service.cache;
+package com.leonardo.tests.shared.cache.infrastructure.service.cache;
 
-import static com.leonardo.tests.misctests.infrastructure.config.cache.memcached.MemcachedCacheConfig.CACHE_MANAGER;
+import static com.leonardo.tests.shared.cache.infrastructure.config.cache.memcached.MemcachedCacheConfig.CACHE_MANAGER;
 
 import com.google.code.ssm.spring.ExtendedSSMCacheManager;
-import com.leonardo.tests.misctests.infrastructure.config.cache.memcached.MemcachedCacheConfig;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.memcached.MemcachedCacheConfig;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-//@Component(MemCachedCacheService.BEAN_ID)
+@Component(MemCachedCacheService.BEAN_ID)
 @RequiredArgsConstructor
 public class MemCachedCacheService extends AbstractCacheService {
 

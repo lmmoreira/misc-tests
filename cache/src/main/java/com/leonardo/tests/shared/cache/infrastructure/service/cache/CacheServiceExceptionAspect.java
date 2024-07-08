@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.service.cache;
+package com.leonardo.tests.shared.cache.infrastructure.service.cache;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -14,10 +14,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-//@Aspect
-//@Component
+@Aspect
+@Component
 @Slf4j
-//@Order(2)
+@Order(2)
 public class CacheServiceExceptionAspect {
 
     private final Map<Class<?>, Function<String, ?>> returnHandlers;

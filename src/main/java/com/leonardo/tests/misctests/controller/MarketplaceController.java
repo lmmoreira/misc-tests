@@ -1,11 +1,13 @@
 package com.leonardo.tests.misctests.controller;
 
-import com.leonardo.tests.misctests.infrastructure.service.cache.CacheServiceFactory;
+//import com.leonardo.tests.misctests.infrastructure.service.cache.CacheServiceFactory;
+
 import com.leonardo.tests.misctests.infrastructure.service.cache.CaffeineCacheService;
 import com.leonardo.tests.misctests.infrastructure.service.cache.MemCachedCacheService;
 import com.leonardo.tests.misctests.infrastructure.service.cache.RedisCacheService;
 import com.leonardo.tests.misctests.orm.entity.MarketplaceEntity;
 import com.leonardo.tests.misctests.orm.repository.MarketplaceEntityRepository;
+import com.leonardo.tests.shared.cache.infrastructure.service.cache.CacheServiceFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.leonardo.tests.misctests.infrastructure.config.cache.memcached;
+package com.leonardo.tests.shared.cache.infrastructure.config.cache.memcached;
 
 import com.google.code.ssm.Cache;
 import com.google.code.ssm.CacheFactory;
@@ -8,8 +8,8 @@ import com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl;
 import com.google.code.ssm.providers.xmemcached.XMemcachedConfiguration;
 import com.google.code.ssm.spring.ExtendedSSMCacheManager;
 import com.google.code.ssm.spring.SSMCache;
-import com.leonardo.tests.misctests.infrastructure.config.cache.InMemoryCacheManager;
-import com.leonardo.tests.misctests.infrastructure.config.cache.properties.MemcachedProperties;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.InMemoryCacheManager;
+import com.leonardo.tests.shared.cache.infrastructure.config.cache.properties.MemcachedProperties;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@EnableConfigurationProperties(MemcachedProperties.class)
-//@Configuration
-//@EnableCaching
+@EnableConfigurationProperties(MemcachedProperties.class)
+@Configuration
+@EnableCaching
 @RequiredArgsConstructor
 @Slf4j
-//@ConditionalOnExpression("'${cache.memcached.mode}'.equals('memcached') || '${cache.memcached.mode}'.equals('inmemory')")
+@ConditionalOnExpression("'${cache.memcached.mode}'.equals('memcached') || '${cache.memcached.mode}'.equals('inmemory')")
 public class MemcachedCacheConfig extends AbstractSSMConfiguration implements InMemoryCacheManager {
 
     public static final String CACHE_MANAGER = "memcachedCacheManager";
