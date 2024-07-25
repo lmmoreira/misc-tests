@@ -27,7 +27,7 @@ public class CaffeineCacheConfig {
     @Primary
     @Bean(name = CACHE_MANAGER)
     public CacheManager caffeineCacheManager() {
-        CaffeineCacheManager cacheManager = new CustomCaffeineCacheManager();
+        CaffeineCacheManager cacheManager = new CustomCaffeineCacheManager(caffeineProperties.defaultTTL());
         return (caffeineProperties.isNoneMode()) ? null
             : cacheManager;
     }

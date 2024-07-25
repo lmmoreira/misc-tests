@@ -15,5 +15,4 @@ public interface CacheProperties {
         return (!this.isNoneMode() && !this.isInMemoryMode());
     }
 
-
 }

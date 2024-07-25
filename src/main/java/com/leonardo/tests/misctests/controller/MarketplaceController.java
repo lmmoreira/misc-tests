@@ -1,5 +1,9 @@
 package com.leonardo.tests.misctests.controller;
 
+
+import com.leonardo.tests.misctests.infrastructure.config.cache.caffeine.CaffeineCacheConfig;
+import com.leonardo.tests.misctests.infrastructure.config.cache.memcached.MemcachedCacheConfig;
+import com.leonardo.tests.misctests.infrastructure.config.cache.redis.RedisCacheConfig;
 import com.leonardo.tests.misctests.infrastructure.service.cache.CacheServiceFactory;
 import com.leonardo.tests.misctests.infrastructure.service.cache.CaffeineCacheService;
 import com.leonardo.tests.misctests.infrastructure.service.cache.MemCachedCacheService;
@@ -8,6 +12,7 @@ import com.leonardo.tests.misctests.orm.entity.MarketplaceEntity;
 import com.leonardo.tests.misctests.orm.repository.MarketplaceEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +78,27 @@ public class MarketplaceController {
                     .put("default2" + marketplaceId, e, 30);
                 return e;
             });
+    }
+
+    @GetMapping(value = "/redis/annot/{marketplaceId}", produces = "application/json")
+    @Cacheable(cacheManager = RedisCacheConfig.CACHE_MANAGER, value = RedisCacheConfig.CACHE_NAME, key = "'default' + #marketplaceId")
+    public MarketplaceEntity getUserRedisAnnot(@PathVariable Long marketplaceId) {
+        return marketplaceEntityRepository.findById(marketplaceId)
+            .orElseThrow(RuntimeException::new);
+    }
+
+    @GetMapping(value = "/memcached/annot/{marketplaceId}", produces = "application/json")
+    @Cacheable(cacheManager = MemcachedCacheConfig.CACHE_MANAGER, value = MemcachedCacheConfig.CACHE_NAME,key = "'default' + #marketplaceId")
+    public MarketplaceEntity getUserMemCachedAnnot(@PathVariable Long marketplaceId) {
+        return marketplaceEntityRepository.findById(marketplaceId)
+            .orElseThrow(RuntimeException::new);
+    }
+
+    @GetMapping(value = "/caffeine/annot/{marketplaceId}", produces = "application/json")
+    @Cacheable(cacheManager = CaffeineCacheConfig.CACHE_MANAGER, value = CaffeineCacheConfig.CACHE_NAME, key = "'default' + #marketplaceId")
+    public MarketplaceEntity getUserCaffeineAnnot(@PathVariable Long marketplaceId) {
+        return marketplaceEntityRepository.findById(marketplaceId)
+            .orElseThrow(RuntimeException::new);
     }
 
 }

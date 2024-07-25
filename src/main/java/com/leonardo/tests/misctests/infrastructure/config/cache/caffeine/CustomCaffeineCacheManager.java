@@ -7,13 +7,23 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 
 public class CustomCaffeineCacheManager extends CaffeineCacheManager {
 
+    private final long defaultTTL;
+
+    public CustomCaffeineCacheManager(long defaultTTL) {
+        this.defaultTTL = defaultTTL == -1 ? Long.MAX_VALUE : defaultTTL;
+    }
+
+    public CustomCaffeineCacheManager() {
+        this.defaultTTL = Long.MAX_VALUE;
+    }
+
     @Override
     protected CaffeineCache createCaffeineCache(final String name) {
         return new CustomCaffeineCache(name,
             Caffeine.newBuilder().expireAfter(new Expiry<>() {
                 @Override
                 public long expireAfterCreate(Object key, Object value, long currentTime) {
-                    // Default to MAX_VALUE since it is going to be managed manually
+                    // Default to MAX_VALUE or default since it is going to be managed manually
                     return Long.MAX_VALUE;
                 }
 
@@ -28,7 +38,7 @@ public class CustomCaffeineCacheManager extends CaffeineCacheManager {
                     long currentDuration) {
                     return currentDuration;
                 }
-            }).build());
+            }).build(), defaultTTL);
     }
 
 }

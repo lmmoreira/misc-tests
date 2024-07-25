@@ -33,21 +33,25 @@ cache:
   memcached:
     host: localhost
     port: 11211
+    # 0 (infinite) -> X in seconds
     defaultTTL: 0
     timeout: 500
     # none, inmemory, memcached
-    mode: none
+    mode: memcached
   redis:
     host: localhost
     port: 6379
     password: mypass
+    # -1 (infinite) -> X in seconds
     defaultTTL: -1
     timeout: 500
     # none, inmemory, redis
-    mode: none
+    mode: redis
   caffeine:
+    # -1 (infinite) -> X in seconds
+    defaultTTL: -1
     # none, caffeine
-    mode: none
+    mode: caffeine
 
 logging:
   level:

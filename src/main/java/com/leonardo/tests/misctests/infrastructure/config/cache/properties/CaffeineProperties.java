@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConditionalOnProperty(prefix = "cache.caffeine", name = "mode", havingValue = "caffeine")
 @ConfigurationProperties(prefix = "cache.caffeine")
 public record CaffeineProperties(
-    String mode) implements CacheProperties {
+    String mode, int defaultTTL) implements CacheProperties {
 
 }
