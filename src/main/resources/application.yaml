@@ -33,9 +33,9 @@ cache:
   memcached:
     host: localhost
     port: 11211
-    # 0 (infinite) -> X in seconds
-    defaultTTL: 0
-    timeout: 500
+    # -1 (infinite) -> X in seconds
+    defaultTTL: -1
+    timeout: 50
     # none, inmemory, memcached
     mode: memcached
   redis:
@@ -44,7 +44,7 @@ cache:
     password: mypass
     # -1 (infinite) -> X in seconds
     defaultTTL: -1
-    timeout: 500
+    timeout: 50
     # none, inmemory, redis
     mode: redis
   caffeine:
@@ -58,3 +58,4 @@ logging:
     root: INFO
     org.springframework.web: ERROR
     org.hibernate: ERROR
+    org.springframework.cache: TRACE

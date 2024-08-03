@@ -13,4 +13,8 @@ public record MemcachedProperties(
     int timeout
 ) implements CacheProperties {
 
+    @Override
+    public int defaultTTL() {
+        return defaultTTL == -1 ? 0 : defaultTTL;
+    }
 }
