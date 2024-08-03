@@ -35,6 +35,7 @@ cache:
     port: 11211
     # -1 (infinite) -> X in seconds
     defaultTTL: -1
+    # in milliseconds
     timeout: 50
     # none, inmemory, memcached
     mode: memcached
@@ -44,6 +45,7 @@ cache:
     password: mypass
     # -1 (infinite) -> X in seconds
     defaultTTL: -1
+    # in milliseconds
     timeout: 50
     # none, inmemory, redis
     mode: redis

@@ -1,3 +1,12 @@
 spring:
   application:
     name: TestOnly
+
+
+cache:
+  memcached:
+    mode: none
+  redis:
+    mode: none
+  caffeine:
+    mode: none
